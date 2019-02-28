@@ -3,25 +3,28 @@ package despliegueRegistro;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.bind.DatatypeConverter;
+
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
+	PrintWriter pw;
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		PrintWriter pw=resp.getWriter();
+		pw=resp.getWriter();
 		Connection conexion=null;
 		Statement st;
 		ResultSet rs=null;
@@ -34,16 +37,22 @@ public class LoginServlet extends HttpServlet {
 		if(user.isEmpty() || clave.isEmpty()) {
 			throw new ServletException("No has introducido usuario o contraseña");
 		}else {
+			//registres juana  contra:1234
+			//registre luis 23456
+		
 			try {
 				conexion=DriverManager.getConnection("jdbc:mysql://localhost/despliegue","root","practicas");
 				st=conexion.createStatement();
 				sentencia="select * from usuarios where user='"+user+"'";
 				rs=st.executeQuery(sentencia);
-				
-				byte[] cifrada=cifrarClave(clave);
+				pw.println("antes de cifrar");
+				String encriptada=cifra(clave);//cifro la que me llega del formulario
 				while(rs.next()) {
-					String contra=rs.getString("password");
-					if(contra.equals(cifrada)) {
+					//Comprobar que funciona esto.
+					pw.println("entra en el while");
+					String contra=rs.getString("password");//la que leo de la base de datos
+					if(contra.equals(encriptada)) {	
+						pw.println("entra en el if");
 						String hash=rs.getString("hash");
 						if(hash.isEmpty()) {
 							//abrir sesion
@@ -52,12 +61,15 @@ public class LoginServlet extends HttpServlet {
 							//redirecciono a pagina principal
 							resp.sendRedirect("paginaPrincipal.jsp");
 						}else {
+							pw.println("entra en el else");
 							//que me mande a informacionDeRegistro
 							req.setAttribute("id", hash);
 							//para pasar el usuario
 							req.setAttribute("usuario",user);
 							req.getRequestDispatcher("/informacionDeRegistro.jsp").forward(req, resp);//pasamos req y resp que recibio la página
 						}
+					}else {
+						throw new ServletException("Datos de login incorrectos");
 					}
 				}
 			} catch (SQLException e) {
@@ -85,27 +97,12 @@ public class LoginServlet extends HttpServlet {
 		throw new ServletException("No has iniciado sesión");
 	}
 	
-	private byte[] cifrarClave(String clave) throws Exception{
-		final byte[] bytes = clave.getBytes("UTF-8");
-		final Cipher aes = obtieneCipher(true);
-		final byte[] cifrado = aes.doFinal(bytes);
-		return cifrado;
+	private String cifra(String pal) throws NoSuchAlgorithmException {
+		MessageDigest md=MessageDigest.getInstance("SHA-512");//PARA ENCRIPTAR Y CREAR HASH
+		byte a[]=md.digest(pal.getBytes());
+		String cifrada= DatatypeConverter.printHexBinary(a);
+		return cifrada;
 	}
 
-	private Cipher obtieneCipher(boolean paraCifrar) throws Exception{
-		// TODO Auto-generated method stub
-		final String frase = "FraseLargaConDiferentesLetrasNumerosYCaracteresEspeciales_áÁéÉíÍóÓúÚüÜñÑ1234567890!#%$&()=%_NO_USAR_ESTA_FRASE!_";
-		final MessageDigest digest = MessageDigest.getInstance("SHA");
-		digest.update(frase.getBytes("UTF-8"));
-		final SecretKeySpec key = new SecretKeySpec(digest.digest(), 0, 16, "AES");
 
-		final Cipher aes = Cipher.getInstance("AES/ECB/PKCS5Padding");
-		if (paraCifrar) {
-			aes.init(Cipher.ENCRYPT_MODE, key);
-		} else {
-			aes.init(Cipher.DECRYPT_MODE, key);
-		}
-
-	return aes;
-	}
 }

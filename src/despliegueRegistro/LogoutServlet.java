@@ -17,6 +17,7 @@ public class LogoutServlet extends HttpServlet {
 		HttpSession sesion=req.getSession();
 		String nombre=(String) sesion.getAttribute("logueado");
 		sesion.invalidate();
+		resp.sendRedirect("index.html");
 	}
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

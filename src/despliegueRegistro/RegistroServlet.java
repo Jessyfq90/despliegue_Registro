@@ -1,12 +1,12 @@
 package despliegueRegistro;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
+
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
@@ -27,12 +27,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DatatypeConverter;
 
-import java.security.MessageDigest;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.spec.SecretKeySpec;
+
+
 
 @WebServlet("/registro")
 public class RegistroServlet extends HttpServlet {
@@ -63,7 +60,7 @@ public class RegistroServlet extends HttpServlet {
 			
 			msg.setContent(sb.toString(),"text/html");//contenido y tipo del contenido
 			Transport.send(msg);
-			byte[] claveCifrada=cifrarClave(req.getParameter("password"));
+			String claveCifrada=cifra(req.getParameter("password"));
 			
 			//insertamos en la base de datos el usuario,la contraseña y el hash
 			insertarUser(hash,req.getParameter("usuario"),claveCifrada);
@@ -94,7 +91,7 @@ public class RegistroServlet extends HttpServlet {
 		
 	}
 
-	private void insertarUser(String hash, String user, byte[] claveCifrada) throws ServletException, SQLIntegrityConstraintViolationException {
+	private void insertarUser(String hash, String user, String claveCifrada) throws ServletException, SQLIntegrityConstraintViolationException {
 		// TODO Auto-generated method stub
 		Connection con=null;
 		
@@ -109,27 +106,10 @@ public class RegistroServlet extends HttpServlet {
 		}
 		
 	}
-	private byte[] cifrarClave(String clave) throws Exception{
-		final byte[] bytes = clave.getBytes("UTF-8");
-		final Cipher aes = obtieneCipher(true);
-		final byte[] cifrado = aes.doFinal(bytes);
-		return cifrado;
-	}
-
-	private Cipher obtieneCipher(boolean paraCifrar) throws Exception{
-		// TODO Auto-generated method stub
-		final String frase = "FraseLargaConDiferentesLetrasNumerosYCaracteresEspeciales_áÁéÉíÍóÓúÚüÜñÑ1234567890!#%$&()=%_NO_USAR_ESTA_FRASE!_";
-		final MessageDigest digest = MessageDigest.getInstance("SHA");
-		digest.update(frase.getBytes("UTF-8"));
-		final SecretKeySpec key = new SecretKeySpec(digest.digest(), 0, 16, "AES");
-
-		final Cipher aes = Cipher.getInstance("AES/ECB/PKCS5Padding");
-		if (paraCifrar) {
-			aes.init(Cipher.ENCRYPT_MODE, key);
-		} else {
-			aes.init(Cipher.DECRYPT_MODE, key);
-		}
-
-	return aes;
+	private String cifra(String pal) throws NoSuchAlgorithmException {
+		MessageDigest md=MessageDigest.getInstance("SHA-512");//PARA ENCRIPTAR Y CREAR HASH
+		byte a[]=md.digest(pal.getBytes());
+		String cifrada= DatatypeConverter.printHexBinary(a);
+		return cifrada;
 	}
 }
