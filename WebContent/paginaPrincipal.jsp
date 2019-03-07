@@ -18,7 +18,7 @@
 			
 		%>
 		<header>
-			<h1>Página principal</h1>
+			<h1>Bienvenido a Despliegue de Aplicaciones Web</h1>
 		</header>
 		<main>
 			<h2>Bienvenido <%=user %></h2>

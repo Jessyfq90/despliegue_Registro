@@ -6,6 +6,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Información de registro</title>
+		<link href="./css/estilos.css" type="text/css" rel="stylesheet"/>
 	</head>
 	<body>
 	
@@ -15,9 +16,16 @@
 		HttpSession sesion=request.getSession();
 		sesion.setAttribute("user", usuario);
 	%>
-		<h1>Tramitando registro</h1>
-		<p>Consulte su correo electrónico</p>
-		<p>Se le ha enviado un e-mail para confirmar su contraseña</p>
-		<p><a href="http://localhost:8080/despliegueRegistro/confirmar?id=<%=hash %>">Confirmar</a></p>
+		<header>
+			<h1>Tramitando registro</h1>
+		</header>
+		<main>
+			<section class="confirmacion"">
+				<p>Consulte su correo electrónico</p>
+				<p>Se le ha enviado un e-mail para confirmar su contraseña</p>
+				<p id="enlace"><a href="http://localhost:8080/despliegueRegistro/confirmar?id=<%=hash %>">Confirmar</a></p>
+			</section>
+		</main>
+
 	</body>
 </html>

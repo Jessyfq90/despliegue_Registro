@@ -79,3 +79,21 @@ footer section a{
 	height: 8em;
 	border-left: 1px solid white;
 }
+.confirmacion{
+	background-color:white;
+	font-size:120%;
+	padding:2em;
+	width:50%;
+	margin-left:20%;
+	margin-top:3em;
+	
+	border-radius: 41px;
+	-moz-border-radius:41px;
+	-webkit-border-radiur:41px;
+	border: 2px outset #1F5103;
+}
+
+#enlace{
+	text-align:center;
+}
+
