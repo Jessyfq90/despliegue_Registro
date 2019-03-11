@@ -20,9 +20,25 @@
 		<header>
 			<h1>Bienvenido a Despliegue de Aplicaciones Web</h1>
 		</header>
+		<nav>
+			<ul class="menu1">
+				<li>Playstation 4
+<!-- 					<ul class="submenu"> -->
+<!-- 						<li>Quiénes somos</li> -->
+<!-- 						<li>Donde estamos</li> -->
+<!-- 					</ul> -->
+				</li>
+				<li>Nintendo Switch</li>
+				<li>Nintendo 2DS/3DS</li>
+				<li>X-Box ONE</li>
+				<li>PC</li>
+			</ul>
+			<ul class="menu2">
+				<li><a href="logout">Cerrar sesión</a></li>
+			</ul>
+		</nav>
 		<main>
 			<h2>Bienvenido <%=user %></h2>
-			<a href="logout">Cerrar sesión</a>
 		<%} %>
 		</main>
 		<footer>
