@@ -1,0 +1,25 @@
+@charset "UTF-8";
+table{
+	border:1px solid black;
+	border-collapse:collapse;
+	background:white;
+	text-align:center;
+	margin-bottom:2em;
+	width:85%;
+	margin-left:7%
+}
+thead{
+	background:green;
+	color:white;
+}
+td{
+	border:1px solid green;
+	padding:0.3em;
+}
+.descripcion{
+	text-align: left;
+}
+.rojo{
+	background:black;
+	color:white;
+}

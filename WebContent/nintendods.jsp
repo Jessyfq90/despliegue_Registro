@@ -1,14 +1,15 @@
-<!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="javax.servlet.http.HttpSession" %>
 <%@ page import="java.sql.*" %>
 <%@ page import="javax.servlet.ServletException" %>
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Página principal</title>
+		<title>Nintendo 2Ds/3Ds</title>
 		<link href="./css/estilos.css" type="text/css" rel="stylesheet"/>
+		<link href="./css/tabla.css" type="text/css" rel="stylesheet"/>
 	</head>
 	<body>
 		<%
@@ -20,32 +21,34 @@
 			
 		%>
 		<header>
-			<h1>Bienvenido a Despliegue de Aplicaciones Web</h1>
+			<h1>Nintendo 2DS/3DS</h1>
 		</header>
 		<nav>
 			<ul class="menu1">
 				<li><a href="paginaPrincipal.jsp">Inicio</a></li>
-				<li><a href="ps.jsp">Playstation 4</a>
-<!-- 					<ul class="submenu"> -->
-<!-- 						<li>Quiénes somos</li> -->
-<!-- 						<li>Donde estamos</li> -->
-<!-- 					</ul> -->
-				</li>
-				<li><a>Nintendo Switch</a></li>
+				<li><a href="ps.jsp">Playstation 4</a></li>
+				<li><a href="switch.jsp">Nintendo Switch</a></li>
 				<li><a href="nintendods.jsp">Nintendo 2DS/3DS</a></li>
-				<li><a>X-Box ONE</a></li>
-				<li><a>PC</a></li>
+				<li><a href="xbox.jsp">X-Box ONE</a></li>
+				<li><a href="pc.jsp">PC</a></li>
 			</ul>
 			<ul class="menu2">
 				<li><a href="logout">Cerrar sesión</a></li>
 			</ul>
 		</nav>
 		<main>
-			<h2>Inicio</h2>
-			<h2>Bienvenido <%=user %></h2>
-			<p>En esta página web podrá informarse sobre multitud de juegos para diferentes plataformas: </p>
-			<ul>
-				<!-- Acceso a la base de datos para mostrar en una lista los modelos que hay: -->
+			<h2>Bienvenido a la sección Nintendo 2DS/3DS, <%=user %></h2>
+			<table>
+			<thead>
+				<tr>
+					<th>Nombre</th>
+					<th>Precio</th>
+					<th>Descripcion</th>
+					<th>Año</th>
+				</tr>
+			</thead>
+			<tbody>
+			<!-- Acceso a la base de datos para mostrar en una lista los juegos que hay para la play4: -->
 				<%
 					Connection conexion=null;
 					Statement st;
@@ -56,12 +59,28 @@
 					try{
 						conexion=DriverManager.getConnection("jdbc:mysql://localhost/despliegue","root","practicas");
 						st=conexion.createStatement();
-						sentencia="select * from modelo";
+						sentencia="select * from juegos j, modelo m where m.tipo = 'Nintendo 2DS/3DS' and m.id=j.id_modelo";
 						rs=st.executeQuery(sentencia);
 						while(rs.next()){
-							String tipo=rs.getString("tipo");
+							//String tipo=rs.getString("tipo");
+							String nombre=rs.getString("nombre");
+							float precio=rs.getFloat("precio");
+							String descripcion=rs.getString("descripcion");
+							int year=rs.getInt("year");
+							boolean disponible=rs.getBoolean("disponible");
+							//si esta disponible pongo tr y si no esta disponible le pongo la class rojo para cambiarle el color
+							if(disponible){
 				%>
-					<li><%=tipo %></li>
+					<tr>
+					<%		}else{ %>
+					<tr class="rojo">
+					<%		} %>
+						<td><%=nombre %></td>
+						<td><%=precio %>€</td>
+						<td class="descripcion"><%=descripcion %></td>
+						<td><%=year %></td>
+					</tr>
+					
 				<% 
 							
 						}
@@ -81,8 +100,8 @@
 					}
 				
 				%>
-			</ul>
-		<p>Existen juegos disponibles para diferentes plataformas.</p>
+				</tbody>
+			</table>
 		</main>
 		<footer>
 			<section class="contacto">
@@ -107,5 +126,6 @@
 		</footer>
 		
 		<%} //Cierre del if(usuario==null)else %>
+		
 	</body>
 </html>

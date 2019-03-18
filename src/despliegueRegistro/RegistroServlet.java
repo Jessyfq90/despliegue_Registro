@@ -42,12 +42,17 @@ public class RegistroServlet extends HttpServlet {
 		propiedades.put("mail.transport.protocol","smtp");
 		Session mailSession=Session.getInstance(propiedades);
 		Message msg=new MimeMessage(mailSession);
-		//comprobar usuario, correo y password?
+		
 		try {
+			//direccion de correo desde la que mando el mensaje
 			msg.setFrom(new InternetAddress("fpdespliegue8@gmail.com"));
+			//direccion de correo a la que mando el mensaje, es la que me llega del formulario de registro
 			msg.setRecipient(Message.RecipientType.TO , new InternetAddress(req.getParameter("email")) );
+			//la fecha
 			msg.setSentDate(new Date());
-			msg.setSubject("Configuración de registro en loquesea.com");
+			//El asunto
+			msg.setSubject("Configuración de registro en infojuegos.com");
+			//creamos el string que sera el cuerpo del mensaje a enviar
 			StringBuilder sb=new StringBuilder();
 			sb.append("<p>Confirma tu dirección de correo</p>");
 			sb.append("<p><a href=\"http://localhost:8080/despliegueRegistro/confirmar?id=");
@@ -64,12 +69,7 @@ public class RegistroServlet extends HttpServlet {
 			
 			//insertamos en la base de datos el usuario,la contraseña y el hash
 			insertarUser(hash,req.getParameter("usuario"),claveCifrada);
-			//PAsar parametros a otra página
-			req.setAttribute("id", hash);
-			//para pasar el usuario
-			req.setAttribute("usuario",req.getParameter("usuario"));
-			//req.setAttribute("user",req.getParameter("usuario"));
-			
+		
 			//redireccionamos a la pagina que muestra el mensaje de confirmar asique tiene que ser .jsp
 			req.getRequestDispatcher("/informacionDeRegistro.jsp").forward(req, resp);//pasamos req y resp que recibio la página
 			//resp.sendRedirect("informacionDeRegistro.jsp");

@@ -14,8 +14,14 @@ header, footer{
 #error{
 		background-color:red;
 }
+#enlaceError{
+	color:red;
+}
+#index{
+	height:25em;
+}
 main{
-	height:30em;
+/* 	height:30em; */
 	width:100%;
 }
 #login{
@@ -73,7 +79,7 @@ footer section {
 footer section li{
 	list-style:none;
 }
-footer section a{
+a{
 	color:white;
 	text-decoration:none;
 }
@@ -113,8 +119,9 @@ ul{
 	margin-top:0;
 	float: left;
 	border: 2px outset black;
-	min-width: 12%;
+	min-width: 10%;
 	padding: 0.5em;
+	
 	
 }
 .menu2 >li{
@@ -125,9 +132,8 @@ ul{
 	padding: 0.5em;
 }
 
-li{
+.menu1 > li, .menu2 > li{
 	background-color:#AD974A;
-	color:white;
 	font-weight:bold;
 }
 

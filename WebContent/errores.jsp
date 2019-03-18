@@ -17,7 +17,7 @@
 		<main>
 			<section class="errores">
 				<p><%=msg %></p>
-				<p>Vuelve a la página de <a href="index.html"> inicio de sesión.</a></p>
+				<p>Vuelve a la página de <a id="enlaceError" href="index.html"> inicio de sesión.</a></p>
 			</section>
 		</main>
 	</body>

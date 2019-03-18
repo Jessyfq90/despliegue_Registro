@@ -15,23 +15,23 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 @WebServlet("/confirmar")
 public class Confirmar extends HttpServlet {
+	String user;
+	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		//el hash
 		String id=req.getParameter("id");
-		HttpSession sesion=req.getSession();
-		String user=(String) sesion.getAttribute("user");
+	
 		
-
-		//LLEgan bien los dos datos
-		//pw.println("El hash: "+id);
-		//pw.println("El usuario: "+user);
-		//Comprobar si el hash del user en la base de datos es igual al hash que llega
+		//Comprobar si el hash existe en la base de datos 
 		
-		boolean valido=comprobarHash(id,user);
+		boolean valido=comprobarHash(id);
 		if(valido) {
 			
-			borrarHash(user);
+			borrarHash(id);
 			//redireccionamos a pagina principal despues de abrir la sesion con el atribute logueado y el nombre del user
+			
+			HttpSession sesion=req.getSession();
 			sesion.setAttribute("logueado", user);
 			resp.sendRedirect("paginaPrincipal.jsp");
 		}else {
@@ -41,21 +41,33 @@ public class Confirmar extends HttpServlet {
 
 	
 	}
-	private void borrarHash(String user) throws ServletException {
+	/**
+	 * Borramos el hash en la base de datos
+	 * @param id es el hash
+	 * @throws ServletException
+	 */
+	private void borrarHash(String id) throws ServletException {
 		// TODO Auto-generated method stub
 		Connection con=null;
 		
 		try {
 			con=DriverManager.getConnection("jdbc:mysql://localhost/despliegue","root","practicas");
 			Statement st=con.createStatement();
-			String sentencia="update usuarios set hash='' where user='"+user+"'";
+			String sentencia="update usuarios set hash='' where hash='"+id+"'";
 			int rs=st.executeUpdate(sentencia);
 		} catch (SQLException e) {
 			throw new ServletException(e);
 		}
 		
 	}
-	private boolean comprobarHash(String id, String user) throws ServletException{
+	/**
+	 * Comprobamos si existe el hash en la base de datos, si existe cogemos el valor user de esa fila 
+	 * y devolvemos true
+	 * @param id es el hash
+	 * @return
+	 * @throws ServletException
+	 */
+	private boolean comprobarHash(String id) throws ServletException{
 		// TODO Auto-generated method stub
 		Connection con=null;
 		ResultSet rs=null;
@@ -64,12 +76,14 @@ public class Confirmar extends HttpServlet {
 			//encryptar la password
 			con=DriverManager.getConnection("jdbc:mysql://localhost/despliegue","root","practicas");
 			Statement st= con.createStatement();
-			String sentencia="select * from usuarios where user='"+user+"'";
+			String sentencia="select * from usuarios where hash='"+id+"'";
 			rs=st.executeQuery(sentencia);
 			while(rs.next()) {
+				//con el coinciden=true deberia funcionar sin mas
 				String hashRegistrado=rs.getString("hash");
 				if(hashRegistrado.equals(id)) {
 					//hash coinciden
+					user=rs.getString("user");
 					coinciden=true;
 				}
 			}

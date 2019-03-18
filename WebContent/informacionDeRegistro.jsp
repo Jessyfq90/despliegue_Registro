@@ -9,13 +9,6 @@
 		<link href="./css/estilos.css" type="text/css" rel="stylesheet"/>
 	</head>
 	<body>
-	
-	<%
-		String hash=(String) request.getAttribute("id");
-		String usuario=(String)request.getAttribute("usuario");
-		HttpSession sesion=request.getSession();
-		sesion.setAttribute("user", usuario);
-	%>
 		<header>
 			<h1>Tramitando registro</h1>
 		</header>
@@ -23,7 +16,7 @@
 			<section class="confirmacion"">
 				<p>Consulte su correo electrónico</p>
 				<p>Se le ha enviado un e-mail para confirmar su contraseña</p>
-				<p id="enlace"><a href="http://localhost:8080/despliegueRegistro/confirmar?id=<%=hash %>">Confirmar</a></p>
+				
 			</section>
 		</main>
 
